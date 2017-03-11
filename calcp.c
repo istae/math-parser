@@ -14,10 +14,9 @@
 /* main function that creates a parse tree from user input
 each '(' character create a new tree and is pushed onto a tree pointer stack,
 at the end of main loop, trees are attached together into one main tree,
-empty '(' are discarded
-initially user input is cleansed by removespace()
+empty '(' trees are discarded
+initially user input is cleansed by removespaces()
 */
-
 Param* parse(char* c)
 {
     int top = -1;
@@ -29,7 +28,7 @@ Param* parse(char* c)
     Param* params = newNode();
     pstack[++top] = params;
 
-    removespace(c);
+    removespaces(c);
 
     while (*c) {
 
@@ -48,24 +47,24 @@ Param* parse(char* c)
             } while(isdigit(*++c));
             --c;
             buf[i] = '\0';
-            pstack[top] = pushDNode(&pstack[top], atoi(buf));
+            pstack[top] = pushDNode(pstack[top], atoi(buf));
         }
 
 
         else if (isoperand(*c)) {
-            pstack[top] = pushOprNode(&pstack[top], *c);
+            pstack[top] = pushOprNode(pstack[top], *c);
         }
 
         ++c;
     }
 
-    int size = top;
+    // for each tree on top of stack, attach to one before
     while (top > 0) {
          pstack[top-1] = attachTrees(pstack[top], pstack[top-1]);
          --top;
     }
 
-    return pstack[0];
+    return pstack[top];
 }
 
 // generate result from tree
@@ -110,32 +109,32 @@ void apply(Param* p, void fn(Param*))
 
 
 // digit node
-Param* pushDNode(Param** p, int val)
+Param* pushDNode(Param* p, int val)
 {
     Param* new = newNode();
     new->type = NUM;
     new->value = val;
-    new->parent = (*p);
+    new->parent = p;
 
-    if ((*p)->left == NULL)
-        (*p)->left = new;
+    if (p->left == NULL)
+        p->left = new;
     else
-        (*p)->right = new;
+        p->right = new;
 
     return new;
 }
 
 // operand node
-Param* pushOprNode(Param** p, int opr)
+Param* pushOprNode(Param* p, int opr)
 {
     // find parent with NUl type, if out of bound create new node
     Param* n;
-    while ((*p) != NULL && (*p)->type != NUL) {
-        n = (*p);
-        (*p) = (*p)->parent;
+    while (p != NULL && p->type != NUL) {
+        n = p;
+        p = p->parent;
     }
     // special case where new node is needed
-    if ((*p) == NULL) {
+    if (p == NULL) {
         Param* new = newNode();
         new->value = opr;
         new->type = OPR;
@@ -145,9 +144,9 @@ Param* pushOprNode(Param** p, int opr)
     }
 
     else {
-        (*p)->value = opr;
-        (*p)->type = OPR;
-        return (*p);
+        p->value = opr;
+        p->type = OPR;
+        return p;
     }
 }
 
@@ -172,7 +171,7 @@ int isoperand(char c)
     return i < 4;
 }
 
-void removespace(char* s)
+void removespaces(char* s)
 {
     char* d = s;
     do
@@ -215,7 +214,7 @@ void cleanup(Param *p)
     free(p);
 }
 
-void reset(Param** p, int size)
+void reset(Param** p)
 {
     apply(*(p), cleanup);
 }

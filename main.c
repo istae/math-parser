@@ -14,7 +14,7 @@ int main(int argc, char** argv)
             printf("\nERROR: systax error or input too long\n");
         else {
             int result = getresult(getroot(tree));
-            reset(&tree, DIGITS);
+            reset(&tree);
             printf("---------------------: %d\n", result);
         }
     }
