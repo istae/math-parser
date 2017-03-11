@@ -21,9 +21,9 @@ Currently these operands are computable
 
 Calculation is done from left to right
 
-(3+4)*(99-4)
-(((((((3*3
-4+(9-6*) -> produces 10
-3+3+(2 -> produces 9 (invalid Parenthesization of '(2' )
+* (3+4)*(99-4)
+* (((((((3*3
+* 4+(9-6*) -> produces 10
+* 3+3+(2 -> produces 9 (invalid Parenthesization of '(2' )
  
 
