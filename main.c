@@ -12,10 +12,15 @@ int main(int argc, char** argv)
         Param* tree = parse(buffer);
         if (tree == NULL)
             printf("\nERROR: systax error or input too long\n");
-        else {
+        else if (tree->type != ERR) {
             int result = getresult(getroot(tree));
-            reset(&tree);
+            reset(tree);
             printf("---------------------: %d\n", result);
+        }
+        else {
+            printf("\nsyntax error!\n%s\n", buffer);
+            printf("%*c\n", tree->value, 94);
+            reset(tree);
         }
     }
 

@@ -14,28 +14,32 @@
 /* main function that creates a parse tree from user input
 each '(' character create a new tree and is pushed onto a tree pointer stack,
 at the end of main loop, trees are attached together into one main tree,
-empty '(' trees are discarded
-initially user input is cleansed by removespaces()
+does 3 runs on *c, 1) for removing spaces, 2) for sysntax check, 3) for tree build
 */
 Param* parse(char* c)
 {
-    int top = -1;
+    // Param stack
+    int ptop = -1;
     Param* pstack[DIGITS];
-    // initialize stack with NULL pointers
-    for(int i=0;i<DIGITS; i++)
-        pstack[i] = NULL;
 
+    // initial node
     Param* params = newNode();
-    pstack[++top] = params;
+    pstack[++ptop] = params;
 
     removespaces(c);
+
+    // run through input once, return syntax error if any
+    syntaxcheck(params, c);
+    if (params->type == ERR) {
+        return params;
+    }
 
     while (*c) {
 
         if (*c == '(') {
-            if (top == DIGITS - 1)
+            if (ptop == DIGITS - 1)
                 return NULL;
-            pstack[++top] = newNode();
+            pstack[++ptop] = newNode();
         }
 
         else if (isdigit(*c))
@@ -47,24 +51,23 @@ Param* parse(char* c)
             } while(isdigit(*++c));
             --c;
             buf[i] = '\0';
-            pstack[top] = pushDNode(pstack[top], atoi(buf));
+            pstack[ptop] = pushDNode(pstack[ptop], atoi(buf));
         }
 
 
-        else if (isoperand(*c)) {
-            pstack[top] = pushOprNode(pstack[top], *c);
-        }
+        else if (isoperand(*c))
+            pstack[ptop] = pushOprNode(pstack[ptop], *c);
 
         ++c;
     }
 
-    // for each tree on top of stack, attach to one before
-    while (top > 0) {
-         pstack[top-1] = attachTrees(pstack[top], pstack[top-1]);
-         --top;
+    // for each tree on ptop of stack, attach to one before
+    while (ptop > 0) {
+         pstack[ptop-1] = attachTrees(pstack[ptop], pstack[ptop-1]);
+         --ptop;
     }
 
-    return pstack[top];
+    return pstack[ptop];
 }
 
 // generate result from tree
@@ -209,12 +212,57 @@ Param* attachTrees(Param* child, Param* parent)
     return parent;
 }
 
+void syntaxcheck(Param* p, char* c)
+{
+    char* o = c;    //store original address
+    int state = INT;
+    int branch = 0;
+
+    while (*c) {
+
+        if (*c == '(') {
+            if (state != OPR && state != INT)
+                break;
+            state = PAR;
+            branch++;
+        }
+
+        else if (*c == ')') {
+            if (branch == 0) // extra ')'
+                break;
+            branch--;
+        }
+
+        else if (isdigit(*c))
+        {
+            state = NUM;
+            while(isdigit(*++c))
+                ;
+            --c;
+        }
+
+        else if (isoperand(*c)) {
+            if (state == OPR || state == INT)
+                break;
+            state = OPR;
+        }
+        ++c;
+    }
+
+    if (*c != '\0' || branch != 0 || state == OPR) {
+        p->value = (c - o) * sizeof(char); // how far c has walked
+        p->type = ERR;
+        return;
+    }
+}
+
 void cleanup(Param *p)
 {
     free(p);
 }
 
-void reset(Param** p)
+void reset(Param* p)
 {
-    apply(*(p), cleanup);
+    p = getroot(p);
+    apply(p, cleanup);
 }

@@ -11,9 +11,13 @@
 
 // flags
 enum types {
-    NUL, // NULL NODE
-    NUM, // NUMBER NODE
-    OPR // OPERATOR NODE
+    NUL, // 0 null
+    NUM, // 1 number
+    OPR, // 2 operator
+    PAR, // 3 paranthesis
+    ERR, // 4 error code for sysntax checking
+    INT, // 5 init
+    PCL // paranthesis close
 };
 
 // node that holds operator and number input
@@ -41,6 +45,7 @@ void printNode(Param*);
 int getresult(Param*);
 Param* attachTrees(Param*, Param*);
 void cleanup(Param *);
-void reset(Param**);
+void reset(Param*);
+void syntaxcheck(Param*, char*);
 
 #endif
