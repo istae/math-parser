@@ -21,7 +21,8 @@ parser is exited early before any trees are built if a syntax error is deteced b
 
 ### BUGS
 
-* 3 + (4) results in 3
-* (3) parser skips such inputs, and does not throw erro
+No known bugs as of March 12, 2017
+
+* ~~3 + (4) results in 3~~
 
 Calculation is done from left to right

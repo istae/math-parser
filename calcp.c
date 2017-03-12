@@ -2,13 +2,13 @@
 /*
     max user input is 40, this can be changed in header file
 
-
     mostly stolen from
     http://interactivepython.org/runestone/static/pythonds/Trees/ParseTree.html
     &
     Practice of Programming
 
     TODO: most of these functions should be made static
+        make parse() recursive
 */
 
 /* main function that creates a parse tree from user input
@@ -34,6 +34,8 @@ Param* parse(char* c)
         return params;
     }
 
+    // in all honesty, this loop is BEGGING to be recursive, if implemented it
+    // would get rid of the tree attachment function
     while (*c) {
 
         if (*c == '(') {
@@ -195,15 +197,23 @@ Param* getroot(Param* p)
     return n;
 }
 
+// child  = pstack[top], parent = pstack[top-1]
 Param* attachTrees(Param* child, Param* parent)
 {
     child = getroot(child);
     parent = getroot(parent);
 
-    // empty parent, dont attach to main tree, discard it;
+    // empty parent ex: 3 + () + 2, dont attach to main tree, discard it;
     if (parent->type  == NUL) {
         free(parent);
         return child;
+    }
+
+    // ex: 3 + (2)
+    if (child->type == NUL && child->left->type == NUM) {
+        parent->right = child->left;
+        child->left->parent = parent;
+        return parent;
     }
 
     parent->right = child;
@@ -221,14 +231,14 @@ void syntaxcheck(Param* p, char* c)
     while (*c) {
 
         if (*c == '(') {
-            if (state != OPR && state != INT)
+            if (state == NUM)
                 break;
             state = PAR;
             branch++;
         }
 
         else if (*c == ')') {
-            if (branch == 0) // extra ')'
+            if (branch == 0 || state == PAR)
                 break;
             branch--;
         }
@@ -246,6 +256,8 @@ void syntaxcheck(Param* p, char* c)
                 break;
             state = OPR;
         }
+        else
+            break;
         ++c;
     }
 
