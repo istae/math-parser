@@ -49,11 +49,11 @@ Param* parse(char* c)
             char buf[DIGITS];
             int i=0;
             do {
-                buf[i++] = *c;
-            } while(isdigit(*++c));
+                buf[i++] = *c++;
+            } while(isdigit(*c) || *c == '.');
             --c;
             buf[i] = '\0';
-            pstack[ptop] = pushDNode(pstack[ptop], atoi(buf));
+            pstack[ptop] = pushDNode(pstack[ptop], atof(buf));
         }
 
 
@@ -64,16 +64,14 @@ Param* parse(char* c)
     }
 
     // for each tree on ptop of stack, attach to one before
-    while (ptop > 0) {
-         pstack[ptop-1] = attachTrees(pstack[ptop], pstack[ptop-1]);
-         --ptop;
-    }
+    for (;ptop>0; ptop--)
+        pstack[ptop-1] = attachTrees(pstack[ptop], pstack[ptop-1]);
 
     return pstack[ptop];
 }
 
 // generate result from tree
-int getresult(Param* p)
+double getresult(Param* p)
 {
     Param* left = p->left;
     Param* right = p->right;
@@ -114,7 +112,7 @@ void apply(Param* p, void fn(Param*))
 
 
 // digit node
-Param* pushDNode(Param* p, int val)
+Param* pushDNode(Param* p, double val)
 {
     Param* new = newNode();
     new->type = NUM;
@@ -203,7 +201,7 @@ Param* attachTrees(Param* child, Param* parent)
     child = getroot(child);
     parent = getroot(parent);
 
-    // empty parent ex: 3 + () + 2, dont attach to main tree, discard it;
+    // empty parent ex: (3) + 2
     if (parent->type  == NUL) {
         free(parent);
         return child;
@@ -213,9 +211,11 @@ Param* attachTrees(Param* child, Param* parent)
     if (child->type == NUL && child->left->type == NUM) {
         parent->right = child->left;
         child->left->parent = parent;
+        free(child);
         return parent;
     }
 
+    // normal cases
     parent->right = child;
     child->parent = parent;
 
@@ -226,7 +226,8 @@ void syntaxcheck(Param* p, char* c)
 {
     char* o = c;    //store original address
     int state = INT;
-    int branch = 0;
+    int branch = 0; // '(' and ')' count, must be zero at the end
+    int decimal;
 
     while (*c) {
 
@@ -243,12 +244,18 @@ void syntaxcheck(Param* p, char* c)
             branch--;
         }
 
-        else if (isdigit(*c))
-        {
+        // get digit and '.', break if more than one '.'
+        else if (isdigit(*c)) {
             state = NUM;
-            while(isdigit(*++c))
-                ;
+            decimal=0;
+            do {
+                ++c;
+                if (*c == '.')
+                    decimal++;
+            } while (isdigit(*c) || *c == '.');
             --c;
+            if (decimal > 1 || *c == '.')
+                break;
         }
 
         else if (isoperand(*c)) {
@@ -256,8 +263,10 @@ void syntaxcheck(Param* p, char* c)
                 break;
             state = OPR;
         }
+
         else
             break;
+
         ++c;
     }
 

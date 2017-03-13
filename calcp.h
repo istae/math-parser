@@ -23,7 +23,7 @@ enum types {
 // node that holds operator and number input
 struct Param {
     int type;
-    int value;
+    double value;
     struct Param* left;
     struct Param* right;
     struct Param* parent;
@@ -35,14 +35,14 @@ static const char operands[] = "+-/*";
 
 Param* parse(char*);
 Param* pushOprNode(Param*, int);
-Param* pushDNode(Param*, int);
+Param* pushDNode(Param*, double);
 void apply(Param*, void fn(Param*));
 int isoperand(char);
 void removespaces(char* s);
 Param* newNode(void);
 Param* getroot(Param*);
 void printNode(Param*);
-int getresult(Param*);
+double getresult(Param*);
 Param* attachTrees(Param*, Param*);
 void cleanup(Param *);
 void reset(Param*);

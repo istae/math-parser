@@ -13,13 +13,13 @@ int main(int argc, char** argv)
         if (tree == NULL)
             printf("\nERROR: input too long\n");
         else if (tree->type != ERR) {
-            int result = getresult(getroot(tree));
+            double result = getresult(getroot(tree));
             reset(tree);
-            printf("= %d\n", result);
+            printf("= %.3lf\n", result);
         }
         else {
             printf("\nsyntax error!\n%s\n", buffer);
-            printf("%*c\n", tree->value, 94);
+            printf("%*c\n", (int)tree->value, 94);
             reset(tree);
         }
     }
