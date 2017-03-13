@@ -39,8 +39,6 @@ Param* parse(char* c)
     while (*c) {
 
         if (*c == '(') {
-            if (ptop == DIGITS - 1)
-                return NULL;
             pstack[++ptop] = newNode();
         }
 
@@ -102,7 +100,7 @@ void printNode(Param* p)
 // Postorder
 void apply(Param* p, void fn(Param*))
 {
-    if (p == NUL)
+    if (p == NULL)
         return;
 
     apply(p->left, fn);
@@ -171,7 +169,7 @@ int isoperand(char c)
     int i;
     for (i=0; operands[i] != '\0' && operands[i] != c; i++)
         ;
-    return i < 4;
+    return i < OPRLEN;
 }
 
 void removespaces(char* s)
@@ -187,11 +185,10 @@ void removespaces(char* s)
 Param* getroot(Param* p)
 {
     Param* n;
-    do {
+    while (p != NULL) {
         n = p;
         p = p->parent;
-    } while(p != NULL);
-
+    }
     return n;
 }
 
@@ -284,6 +281,5 @@ void cleanup(Param *p)
 
 void reset(Param* p)
 {
-    p = getroot(p);
     apply(p, cleanup);
 }

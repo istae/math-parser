@@ -1,5 +1,5 @@
-#ifndef CSV_H
-#define CSV_H
+#ifndef CALCP_H
+#define CALCP_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,6 +32,7 @@ struct Param {
 typedef struct Param Param;
 
 static const char operands[] = "+-/*";
+static const int OPRLEN = strlen(operands);
 
 Param* parse(char*);
 Param* pushOprNode(Param*, int);
