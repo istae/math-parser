@@ -5,10 +5,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include "recparse.h"
 
 #define SIZE 1000
-#define DIGITS 40
 
 // flags
 enum types {
@@ -20,15 +18,17 @@ enum types {
     INT, // 5 init
 };
 
+typedef struct Param Param;
+
 // node that holds operator and number input
 struct Param {
     int type;
     double value;
-    struct Param* left;
-    struct Param* right;
+    Param* left;
+    Param* right;
 };
 
-typedef struct Param Param;
+
 
 static const char operands[] = "+-/*";
 static const int OPRLEN = 4;

@@ -1,12 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-
 #include "recparse.h"
 
 int main(int argc, char** argv)
 {
-    char buffer[SIZE];
+    char buffer[SIZE]; //SIZE define in header
     int len;
 
     while (fgets(buffer, SIZE, stdin) != NULL) {

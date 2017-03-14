@@ -53,7 +53,7 @@ Param* _parse(Param* root, char* c)
 
         else if (isdigit(*c))
         {
-            char buf[DIGITS];
+            char buf[SIZE];
             int i=0;
             do {
                 buf[i++] = *c++;
