@@ -1,5 +1,10 @@
 #include "calcp.h"
 /*
+    ORIGNINAL ATTEMPT:
+
+    new recursive version gets rid of parent attribute in Param, even though it is trivial for this version as well,
+    im not gonna bother
+
     max user input is 40, this can be changed in header file
 
     mostly stolen from

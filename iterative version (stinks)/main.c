@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-
-#include "recparse.h"
+#include "calcp.h"
 
 int main(int argc, char** argv)
 {
@@ -10,7 +9,7 @@ int main(int argc, char** argv)
     int len;
 
     while (fgets(buffer, SIZE, stdin) != NULL) {
-        Param* tree = r_parse(buffer);
+        Param* tree = parse(buffer);
         if (tree->type != ERR) {
             double result = getresult(getroot(tree));
             printf("= %.3lf\n", result);
