@@ -18,17 +18,13 @@ enum types {
     INT, // 5 init
 };
 
-typedef struct Param Param;
-
 // node that holds operator and number input
-struct Param {
+typedef struct Param {
     int type;
     double value;
-    Param* left;
-    Param* right;
-};
-
-
+    struct Param* left;
+    struct Param*  right;
+} Param;
 
 static const char operands[] = "+-/*";
 static const int OPRLEN = 4;

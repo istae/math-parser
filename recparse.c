@@ -8,7 +8,7 @@
 
     recparse is recursive parse
 
-    recursive version of parse()
+    recursive parse()
     this method removes the parent attribute from Param
 */
 
