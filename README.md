@@ -1,6 +1,8 @@
 # Calculator by Parse Tree
 
-The program parses the input into a parse tree, then prints the computed result.
+The program parses the input into a parse tree, then prints the computed result. Wrong expressions are detected by and the location of the error is notified.
+
+![Alt text](example.png?raw=true, "hey")
 
 ## Parenthesization
 
@@ -18,11 +20,3 @@ Currently these operands are computable
 ## Syntax checking
 
 parser is exited early before any trees are built if a syntax error is deteced by sysntaxcheck()
-
-### BUGS
-
-No known bugs as of March 12, 2017
-
-* ~~3 + (4) results in 3~~
-
-Calculation is done from left to right
