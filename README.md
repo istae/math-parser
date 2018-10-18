@@ -2,6 +2,8 @@
 
 The program parses the input into a parse tree, then prints the computed result.
 
+![Alt text](example.png?raw=true, "hey")
+
 ## Parenthesization
 
  Each '(' creates a new tree and is pushed onto top of the trees stack. Any digit read or operand read from that point on is appened to the tree at the top of the stack.
